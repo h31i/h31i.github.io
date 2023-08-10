@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"h31i.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"slideLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="面试中可能遇到的java基础类问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试题-Java基础篇">
+<meta property="og:url" content="https://h31i.github.io/2019/08/11/java-basic/index.html">
+<meta property="og:site_name" content="h31i的吐槽">
+<meta property="og:description" content="面试中可能遇到的java基础类问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-08-10T16:54:14.000Z">
+<meta property="article:modified_time" content="2019-10-22T16:04:24.000Z">
+<meta property="article:author" content="h31i">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://h31i.github.io/2019/08/11/java-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>面试题-Java基础篇 | h31i的吐槽</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9ad7332814c43e21c73f845f5ef9dd80";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">h31i的吐槽</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/h31i" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://h31i.github.io/2019/08/11/java-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/39379493?s=460&v=4">
+      <meta itemprop="name" content="h31i">
+      <meta itemprop="description" content="love&peace">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h31i的吐槽">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          面试题-Java基础篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-11 00:54:14" itemprop="dateCreated datePublished" datetime="2019-08-11T00:54:14+08:00">2019-08-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/" itemprop="url" rel="index"><span itemprop="name">面试题</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>面试中可能遇到的java基础类问题</p>
+<span id="more"></span>
+
+<h2 id="Java-基础"><a href="#Java-基础" class="headerlink" title="Java 基础"></a>Java 基础</h2><h3 id="JDK-和-JRE-有什么区别"><a href="#JDK-和-JRE-有什么区别" class="headerlink" title="JDK 和 JRE 有什么区别"></a>JDK 和 JRE 有什么区别</h3><ul>
+<li>JDK：Java Development Kit Java开发工具包</li>
+<li>JRE：Java Runtime environment Java运行环境</li>
+</ul>
+<p>JRE，即java运行环境，包含了Java虚拟机、Java核心类库和支持文件，不包含开发工具，主要向用户提供运行java开发软件的运行环境。</p>
+<p>JDK，即Java开发工具包，包含JRE，编译器和调试器等工具（JavaDoc，Java调试器），可以让开发者开发、编译、执行Java应用程序，主要供开发人员使用。</p>
+<blockquote>
+<p>值得注意的是，在JDK 11 中，Oracle不再提供JRE和Server JRE下载</p>
+</blockquote>
+<h3 id="和-equals-的区别是什么"><a href="#和-equals-的区别是什么" class="headerlink" title="== 和 equals 的区别是什么"></a>== 和 equals 的区别是什么</h3><p><strong>“==”</strong></p>
+<p>比较的是变量内存中存放的对象的存地址，用来判断两个对象的地址是否相同，即两个对象是否指向相同的地址，可以说‘==’比较的是引用。</p>
+<p><strong>“equals”</strong></p>
+<p>equals用来比较两个对象的内容，由于所有的类都继承于java.lang.Object类，因此适用于所有对象，只要没有对equals方法进行覆盖，平时调用的就是Object中的equals方法，而Object中的equals方法返回的是 <strong>==</strong> 的判断，因此需要注意。</p>
+<p>字符串对象之间的比较能很好的区别 <strong>==</strong> 与 <strong>equals</strong></p>
+<h3 id="hashCode-和-equals"><a href="#hashCode-和-equals" class="headerlink" title="hashCode 和 equals"></a>hashCode 和 equals</h3><h4 id="两个对象的-hashCode-相同，则-equals-也一定为-true，对吗"><a href="#两个对象的-hashCode-相同，则-equals-也一定为-true，对吗" class="headerlink" title="两个对象的 hashCode()相同，则 equals()也一定为 true，对吗"></a>两个对象的 hashCode()相同，则 equals()也一定为 true，对吗</h4><p>不一定，因为hashCode()方法 和 equals()方法都可以覆盖，返回值可以自定义</p>
+<h4 id="两个对象用equals方法比较为true，它们的Hashcode值相同吗"><a href="#两个对象用equals方法比较为true，它们的Hashcode值相同吗" class="headerlink" title="两个对象用equals方法比较为true，它们的Hashcode值相同吗"></a>两个对象用equals方法比较为true，它们的Hashcode值相同吗</h4><p>不一定，因为默认情况下equals() 方法比较的是对象的内容，内容相同时但对象不一定相同，对象不同hashcode的值就不会相同。</p>
+<p>关于hashCode和equals方法的覆盖使用是有有些规则的：</p>
+<ul>
+<li>两个对象使用equals比较返回true，那么hashCode方法必须返回相同值</li>
+<li>两个对象equals比较返回false，不意味着hashCode方法必须返回不同值</li>
+</ul>
+<h4 id="hashCode-和equals-方法的重要性体现在什么地方"><a href="#hashCode-和equals-方法的重要性体现在什么地方" class="headerlink" title="hashCode()和equals()方法的重要性体现在什么地方"></a>hashCode()和equals()方法的重要性体现在什么地方</h4><p>Java中的HashMap使用hashCode()和equals()方法来确定键值对的索引，当根据键获取值的时候也会用到这两个方法。如果没有正确的实现这两个方法，两个不同的键可能会有相同的hash值，因此，可能会被集合认为是相等的。而且，这两个方法也用来发现重复元素。所以这两个方法的实现对HashMap的精确性和正确性是至关重要的。</p>
+<p><a target="_blank" rel="noopener" href="https://www.nowcoder.com/ta/review-java/review?tpId=31&tqId=21092&query=hashcode&asc=true&order=&page=1">来自牛客网</a></p>
+<h3 id="final-在-java-中有什么作用"><a href="#final-在-java-中有什么作用" class="headerlink" title="final 在 java 中有什么作用"></a>final 在 java 中有什么作用</h3><ol>
+<li>修饰类</li>
+</ol>
+<p>使用final修饰类的话，这个类将无法被继承（由于final类禁止继承，所以final类中所有的方法都隐式的指定为是final的）</p>
+<ol start="2">
+<li>修饰方法</li>
+</ol>
+<p>《JAVA编程思想》第143页：<br>“使用final方法的原因有两个。第一个原因是把方法锁定，以防任何继承类修改它的含义；第二个原因是效率。在早期的Java实现版本中，会将final方法转为内嵌调用。但是如果方法过于庞大，可能看不到内嵌调用带来的任何性能提升。在最近的Java版本中，不需要使用final方法进行这些优化了。”</p>
+<ol start="3">
+<li>修饰变量</li>
+</ol>
+<p>一个被final修饰的变量或引用，一旦初始化后便不能更改。</p>
+<blockquote>
+<p>类的private方法会隐式地被指定为final方法。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dolphin0520/p/3736238.html">推荐阅读</a></p>
+<h3 id="java-中的-Math-round-1-5-等于多少"><a href="#java-中的-Math-round-1-5-等于多少" class="headerlink" title="java 中的 Math.round(-1.5) 等于多少"></a>java 中的 Math.round(-1.5) 等于多少</h3><p>round 表示“四舍五入”，算法为Math.floor(x+0.5),所以</p>
+<pre><code>Math.round(1.5)  =  2
+Math.round(-1.5) = -1
+</code></pre>
+<blockquote>
+<p>注：floor() 方法可对一个数进行下舍入，返回给定参数最大的整数，该整数小于或等于给定的参数。 the largest (closest to positive infinity) floating-point value that less than or equal to the argument and is equal to a mathematical integer.</p>
+</blockquote>
+<h3 id="String-属于基础的数据类型吗"><a href="#String-属于基础的数据类型吗" class="headerlink" title="String 属于基础的数据类型吗"></a>String 属于基础的数据类型吗</h3><p>不是，Java中的String是引用类型</p>
+<p>java中的基本数据类型：byte，short，int，long，float，double，boolean，char</p>
+<p>引用类型包括：类，接口类型，数组类型，枚举类型，注解类型</p>
+<p>基本数据类型在创建时，在栈上给其划分一块内存，将数值直接存储在栈上。</p>
+<p>引用数据类型在创建时，需要先在栈上分配一块内存给引用（句柄），而对象的具体信息都存储在堆内存上，然后由栈上面的引用指向堆对象的地址。</p>
+<h3 id="java-中操作字符串都有哪些类它们之间有什么区别"><a href="#java-中操作字符串都有哪些类它们之间有什么区别" class="headerlink" title="java 中操作字符串都有哪些类它们之间有什么区别"></a>java 中操作字符串都有哪些类它们之间有什么区别</h3><p>主要是：String、StringBuffer、StringBuilder</p>
+<ul>
+<li>String：final修饰类型，String类的方法都是返回new String()。即String对象不能被修改，修改后都会产生新的对象。</li>
+<li>StringBuffer：类中操作方法都有synchronized修饰，线程安全。</li>
+<li>StringBuilder：和StringBuffer用法类似，区别在于类中的方法没有synchronized修饰，线程不安全。速度最快。</li>
+</ul>
+<h3 id="String-str-”i”与-String-str-new-String-“i”-一样吗"><a href="#String-str-”i”与-String-str-new-String-“i”-一样吗" class="headerlink" title="String str=”i”与 String str=new String(“i”)一样吗"></a>String str=”i”与 String str=new String(“i”)一样吗</h3><p>不一样，因为String为final类型所以String str=”i”中，‘i’是在常量池，而new String(“i”)是新建的对象在堆内存中</p>
+<h3 id="如何将字符串反转"><a href="#如何将字符串反转" class="headerlink" title="如何将字符串反转"></a>如何将字符串反转</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//使用StringBuffer中的reverse方法</span><br><span class="line">StringBuffer sbuf = new StringBuffer(&quot;offer&quot;);</span><br><span class="line">sbuf.reverse();</span><br><span class="line">System.out.println(sbuf.toString());</span><br><span class="line"></span><br><span class="line">//使用StringBuilder中的reverse方法</span><br><span class="line">StringBuilder sbder = new StringBuilder(&quot;offer&quot;);</span><br><span class="line">sbder.reverse();</span><br><span class="line">System.out.println(sbder.toString());</span><br></pre></td></tr></table></figure>
+
+<h3 id="String-类的常用方法都有那些"><a href="#String-类的常用方法都有那些" class="headerlink" title="String 类的常用方法都有那些"></a>String 类的常用方法都有那些</h3><table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>toCharArray</td>
+<td>将字符串转换成字符数组</td>
+</tr>
+<tr>
+<td>charAt</td>
+<td>取出指定位置的字符</td>
+</tr>
+<tr>
+<td>getBytes</td>
+<td>将字符串转换成byte数组</td>
+</tr>
+<tr>
+<td>length</td>
+<td>获取字符串长度</td>
+</tr>
+<tr>
+<td>trim</td>
+<td>去掉字符串两端空格</td>
+</tr>
+<tr>
+<td>substring</td>
+<td>字符串的截取</td>
+</tr>
+<tr>
+<td>split</td>
+<td>按照指定字符对字符串进行拆分，返回字符串数组</td>
+</tr>
+<tr>
+<td>toUpperCase</td>
+<td>将字符串中小写字母转换成大写字母</td>
+</tr>
+<tr>
+<td>toLowerCase</td>
+<td>将字符串中大写字母转换成小写字母</td>
+</tr>
+<tr>
+<td>startsWith</td>
+<td>判断是否以指定字符串开头</td>
+</tr>
+<tr>
+<td>endsWith</td>
+<td>判断是否以指定字符串结尾</td>
+</tr>
+<tr>
+<td>equals</td>
+<td>两个String类型内容比较</td>
+</tr>
+<tr>
+<td>equalsIgnoreCase</td>
+<td>将两个字符串进行不区分大小写比较</td>
+</tr>
+<tr>
+<td>replaceAll</td>
+<td>替换指定字符串</td>
+</tr>
+</tbody></table>
+<h3 id="抽象类必须要有抽象方法吗"><a href="#抽象类必须要有抽象方法吗" class="headerlink" title="抽象类必须要有抽象方法吗"></a>抽象类必须要有抽象方法吗</h3><p>用abstract修饰的类就是抽象类，但抽象类中的方法不一定是抽象方法，也就是说，不一定非要有抽象方法。</p>
+<blockquote>
+<p>注：抽象类不能被实例化</p>
+</blockquote>
+<h3 id="普通类和抽象类有哪些区别"><a href="#普通类和抽象类有哪些区别" class="headerlink" title="普通类和抽象类有哪些区别"></a>普通类和抽象类有哪些区别</h3><ol>
+<li>抽象类不能被实例化</li>
+<li>抽象类可以有构造方法，被继承事子类必须继承父类得一个构造方法</li>
+<li>含有抽象方法的类必须修饰为抽象类</li>
+<li>抽象方法不能被声明为静态，但抽象类中可以有静态方法</li>
+<li>抽象类的子类必须实现抽象类中的所有抽象方法，否则这个子类也必须抽象类</li>
+</ol>
+<h3 id="抽象类能使用-final-修饰吗"><a href="#抽象类能使用-final-修饰吗" class="headerlink" title="抽象类能使用 final 修饰吗"></a>抽象类能使用 final 修饰吗</h3><p>抽象类是用于继承得，使用final对其修饰将意味着这个类无法被修改和不可以被继承，所以抽象类不能使用final修饰</p>
+<h3 id="接口和抽象类有什么区别"><a href="#接口和抽象类有什么区别" class="headerlink" title="接口和抽象类有什么区别"></a>接口和抽象类有什么区别</h3><ol>
+<li>抽象类要被子类继承，接口要被类实现</li>
+<li>接口只能做方法申明，在抽象类种可以做方法声明也可以做方法实现</li>
+<li>接口里定义的变量是公共的静态常量，抽象类中的变量是普通变量</li>
+</ol>
+<blockquote>
+<p>恰当的原则应该是优先选择类而不是接口。</p>
+</blockquote>
+<h3 id="java-中-IO-流分为几种"><a href="#java-中-IO-流分为几种" class="headerlink" title="java 中 IO 流分为几种"></a>java 中 IO 流分为几种</h3><ol>
+<li>按流的流向分类：输入流和输出流</li>
+<li>按操作单元划分：字节流和字符流</li>
+<li>按流的角色划分：节点流和处理流</li>
+</ol>
+<blockquote>
+<p>Java IO 流共涉及40多个类，并且都是从如下4个抽象类基类派生出来：InputStream/Reader：所有输入流的基类，前者是字节输入流，后者是字符输入流：OutputStream/Writer：所有输出流的基类，前者是字节输出流，后者是字符输出流。</p>
+</blockquote>
+<h3 id="BIO、NIO、AIO-有什么区别"><a href="#BIO、NIO、AIO-有什么区别" class="headerlink" title="BIO、NIO、AIO 有什么区别"></a>BIO、NIO、AIO 有什么区别</h3><p>BIO：Block IO同步阻塞式IO，传统的IO，特点是模式简单，并发处理能力低</p>
+<p>NIO：Non IO 同步非阻塞IO，传统IO的升级，客户端和服务端通过通道通信，实现多路复用</p>
+<p>AIO：Asynchronous IO，NIO的升级版，也叫NIO2，实现异步非阻塞IO，异步IO的操作基于事件和回调机制</p>
+<h3 id="Files的常用方法都有哪些"><a href="#Files的常用方法都有哪些" class="headerlink" title="Files的常用方法都有哪些"></a>Files的常用方法都有哪些</h3><table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Files.exists()</td>
+<td>检测文件路径是否存在</td>
+</tr>
+<tr>
+<td>Files.createFile()</td>
+<td>创建文件</td>
+</tr>
+<tr>
+<td>Files.createDirectory()</td>
+<td>创建文件夹</td>
+</tr>
+<tr>
+<td>Files.delete()</td>
+<td>删除文件或者目录</td>
+</tr>
+<tr>
+<td>Files.copy()</td>
+<td>复制文件</td>
+</tr>
+<tr>
+<td>Files.move()</td>
+<td>移动文件</td>
+</tr>
+<tr>
+<td>Files.size()</td>
+<td>查看文件个数</td>
+</tr>
+<tr>
+<td>Files.read()</td>
+<td>读取文件</td>
+</tr>
+<tr>
+<td>Files.write()</td>
+<td>写入文件</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>老师有讲过，思想是需要建立在一定的实践基础上，前期需要对代码基础进行多多练习，对代码真正的熟悉，熟练，再去掂量思想也不迟，或许能收获更多，就像读书一样，不同时期感触不同，收获也就不一定相同。</em></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>h31i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://h31i.github.io/2019/08/11/java-basic/" title="面试题-Java基础篇">https://h31i.github.io/2019/08/11/java-basic/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/07/book-recommendations/" rel="prev" title="推荐书籍">
+      <i class="fa fa-chevron-left"></i> 推荐书籍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/11/dally/" rel="next" title="一个书单">
+      一个书单 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">Java 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK-%E5%92%8C-JRE-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">JDK 和 JRE 有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%92%8C-equals-%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.2.</span> <span class="nav-text">&#x3D;&#x3D; 和 equals 的区别是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hashCode-%E5%92%8C-equals"><span class="nav-number">1.3.</span> <span class="nav-text">hashCode 和 equals</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%AF%B9%E8%B1%A1%E7%9A%84-hashCode-%E7%9B%B8%E5%90%8C%EF%BC%8C%E5%88%99-equals-%E4%B9%9F%E4%B8%80%E5%AE%9A%E4%B8%BA-true%EF%BC%8C%E5%AF%B9%E5%90%97"><span class="nav-number">1.3.1.</span> <span class="nav-text">两个对象的 hashCode()相同，则 equals()也一定为 true，对吗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%AF%B9%E8%B1%A1%E7%94%A8equals%E6%96%B9%E6%B3%95%E6%AF%94%E8%BE%83%E4%B8%BAtrue%EF%BC%8C%E5%AE%83%E4%BB%AC%E7%9A%84Hashcode%E5%80%BC%E7%9B%B8%E5%90%8C%E5%90%97"><span class="nav-number">1.3.2.</span> <span class="nav-text">两个对象用equals方法比较为true，它们的Hashcode值相同吗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hashCode-%E5%92%8Cequals-%E6%96%B9%E6%B3%95%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7%E4%BD%93%E7%8E%B0%E5%9C%A8%E4%BB%80%E4%B9%88%E5%9C%B0%E6%96%B9"><span class="nav-number">1.3.3.</span> <span class="nav-text">hashCode()和equals()方法的重要性体现在什么地方</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#final-%E5%9C%A8-java-%E4%B8%AD%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8"><span class="nav-number">1.4.</span> <span class="nav-text">final 在 java 中有什么作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-%E4%B8%AD%E7%9A%84-Math-round-1-5-%E7%AD%89%E4%BA%8E%E5%A4%9A%E5%B0%91"><span class="nav-number">1.5.</span> <span class="nav-text">java 中的 Math.round(-1.5) 等于多少</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-%E5%B1%9E%E4%BA%8E%E5%9F%BA%E7%A1%80%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%90%97"><span class="nav-number">1.6.</span> <span class="nav-text">String 属于基础的数据类型吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-%E4%B8%AD%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%AE%83%E4%BB%AC%E4%B9%8B%E9%97%B4%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.7.</span> <span class="nav-text">java 中操作字符串都有哪些类它们之间有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-str-%E2%80%9Di%E2%80%9D%E4%B8%8E-String-str-new-String-%E2%80%9Ci%E2%80%9D-%E4%B8%80%E6%A0%B7%E5%90%97"><span class="nav-number">1.8.</span> <span class="nav-text">String str&#x3D;”i”与 String str&#x3D;new String(“i”)一样吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%B0%86%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8F%8D%E8%BD%AC"><span class="nav-number">1.9.</span> <span class="nav-text">如何将字符串反转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-%E7%B1%BB%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E9%83%BD%E6%9C%89%E9%82%A3%E4%BA%9B"><span class="nav-number">1.10.</span> <span class="nav-text">String 类的常用方法都有那些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%BF%85%E9%A1%BB%E8%A6%81%E6%9C%89%E6%8A%BD%E8%B1%A1%E6%96%B9%E6%B3%95%E5%90%97"><span class="nav-number">1.11.</span> <span class="nav-text">抽象类必须要有抽象方法吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%AE%E9%80%9A%E7%B1%BB%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%E6%9C%89%E5%93%AA%E4%BA%9B%E5%8C%BA%E5%88%AB"><span class="nav-number">1.12.</span> <span class="nav-text">普通类和抽象类有哪些区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB%E8%83%BD%E4%BD%BF%E7%94%A8-final-%E4%BF%AE%E9%A5%B0%E5%90%97"><span class="nav-number">1.13.</span> <span class="nav-text">抽象类能使用 final 修饰吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.14.</span> <span class="nav-text">接口和抽象类有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-%E4%B8%AD-IO-%E6%B5%81%E5%88%86%E4%B8%BA%E5%87%A0%E7%A7%8D"><span class="nav-number">1.15.</span> <span class="nav-text">java 中 IO 流分为几种</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BIO%E3%80%81NIO%E3%80%81AIO-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.16.</span> <span class="nav-text">BIO、NIO、AIO 有什么区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Files%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="nav-number">1.17.</span> <span class="nav-text">Files的常用方法都有哪些</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="h31i"
+      src="https://avatars2.githubusercontent.com/u/39379493?s=460&v=4">
+  <p class="site-author-name" itemprop="name">h31i</p>
+  <div class="site-description" itemprop="description">love&peace</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/h31i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;h31i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuh31i@163.com" title="E-Mail → mailto:liuh31i@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">h31i</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three-waves.min.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":200,"height":400},"mobile":{"show":true},"log":false});</script></body>
+</html>

