@@ -22,20 +22,22 @@
     var CONFIG = {"hostname":"h31i.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"slideLeftIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="从上往下打印出二叉树的每个节点，同层节点从左至右打印。">
+  <meta name="description" content="关于 CAP 定理 与 BASE 理论的学习与整理（待补充）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从上往下打印二叉树">
-<meta property="og:url" content="https://h31i.github.io/2020/03/09/%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91/index.html">
+<meta property="og:title" content="CAP &amp; BASE 理论整理">
+<meta property="og:url" content="https://h31i.github.io/2022/02/13/2022-02-CAP-BASE/index.html">
 <meta property="og:site_name" content="h31i的吐槽">
-<meta property="og:description" content="从上往下打印出二叉树的每个节点，同层节点从左至右打印。">
+<meta property="og:description" content="关于 CAP 定理 与 BASE 理论的学习与整理（待补充）">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-03-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-11-01T16:05:19.007Z">
+<meta property="article:published_time" content="2022-02-13T15:54:59.000Z">
+<meta property="article:modified_time" content="2023-08-13T17:29:27.878Z">
 <meta property="article:author" content="h31i">
-<meta property="article:tag" content="算法">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="架构">
+<meta property="article:tag" content="理论">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://h31i.github.io/2020/03/09/%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91/">
+<link rel="canonical" href="https://h31i.github.io/2022/02/13/2022-02-CAP-BASE/">
 
 
 <script id="page-configurations">
@@ -48,7 +50,7 @@
   };
 </script>
 
-  <title>从上往下打印二叉树 | h31i的吐槽</title>
+  <title>CAP & BASE 理论整理 | h31i的吐槽</title>
   
 
 
@@ -176,7 +178,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://h31i.github.io/2020/03/09/%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91/">
+    <link itemprop="mainEntityOfPage" href="https://h31i.github.io/2022/02/13/2022-02-CAP-BASE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://avatars2.githubusercontent.com/u/39379493?s=460&v=4">
@@ -189,7 +191,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          从上往下打印二叉树
+          CAP & BASE 理论整理
         </h1>
 
         <div class="post-meta">
@@ -199,16 +201,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-03-09 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-09T00:00:00+08:00">2020-03-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%89%91%E6%8C%87Offer/" itemprop="url" rel="index"><span itemprop="name">剑指Offer</span></a>
-                </span>
+              <time title="创建时间：2022-02-13 23:54:59" itemprop="dateCreated datePublished" datetime="2022-02-13T23:54:59+08:00">2022-02-13</time>
             </span>
 
           
@@ -222,11 +215,55 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>从上往下打印出二叉树的每个节点，同层节点从左至右打印。</p>
+        <p>关于 CAP 定理 与 BASE 理论的学习与整理（待补充）</p>
 <span id="more"></span>
 
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>层次遍历</p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.Queue;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">public class TreeNode &#123;</span></span><br><span class="line"><span class="comment">    int val = 0;</span></span><br><span class="line"><span class="comment">    TreeNode left = null;</span></span><br><span class="line"><span class="comment">    TreeNode right = null;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public TreeNode(int val) &#123;</span></span><br><span class="line"><span class="comment">        this.val = val;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> ArrayList&lt;Integer&gt; <span class="title function_">PrintFromTopToBottom</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">        ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>( root == <span class="literal">null</span> ) <span class="keyword">return</span> list;</span><br><span class="line">        </span><br><span class="line">        Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        queue.add(root);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> ( !queue.isEmpty() )&#123;</span><br><span class="line">            <span class="type">TreeNode</span> <span class="variable">node</span> <span class="operator">=</span> queue.poll();</span><br><span class="line"></span><br><span class="line">            list.add(node.val);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>( node.left != <span class="literal">null</span> )&#123;</span><br><span class="line">                queue.add(node.left);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>( node.right != <span class="literal">null</span> )&#123;</span><br><span class="line">                queue.add(node.right);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h2><p>CAP 理论/定理 起源于 2000 年，由加州大学伯克利分校的 Eric Brewer 教授在分布式计算原理研讨会（PODC）上提出，因此 CAP 定理又被称作 布鲁尔定理（Brewer’s theorem）。两年后，麻省理工学院的 Seth Gilbert 和 Nancy Lynch 发表了布鲁尔猜想的证明，CAP 理论正式成为分布式领域的定理。</p>
+<p>CAP定理是指Consistency（一致）、Availability（可用）、 Partition Tolerance（分区容错）三个基本需求，但是这三个需求最多同时满足其中两个（因为是分布式系统，存在网络分区，所以需要以<strong>分区容错</strong>为前提）</p>
+<ul>
+<li>一致性，所有节点在同一时间看到的数据相同。每个节点每次读取操作都可以获得<strong>最新</strong>写入的数据。这个特性要求数据在所有节点上保持一致，如果有多个节点同时进行修改，那么所有节点都必须保持同步。</li>
+<li>可用性，系统必须随时可用，无论节点失效或网络故障，系统都要继续运行。这个特性要求系统能够在任何时刻都可以提供服务，但是如果出现故障，可能会导致数据不一致。</li>
+<li>分区容错性，系统必须能够容忍网络分区之间可能发生通信异常（分布式系统前提），即网络中的某些节点失效或无法通信。这个特性要求系统能够在网络分区时继续运行，但是可能会导致数据不一致。</li>
+</ul>
+<p><strong>什么是分区？</strong></p>
+<p>大多数分布式系统都分布在多个子网络。每个子网络就叫做一个区（Partition）。<strong>分区容错</strong>的意思是，每个区之间的网络通信可能出现异常。比如，不同城市都有部署服务器，一个城市就是一个区，它们之间可能发生网络问题，导致无法通信。</p>
+<h3 id="P-C-A-三种特性不可兼得，如何取舍？"><a href="#P-C-A-三种特性不可兼得，如何取舍？" class="headerlink" title="P-C-A 三种特性不可兼得，如何取舍？"></a>P-C-A 三种特性不可兼得，如何取舍？</h3><ul>
+<li>C&amp;A: 保证一致性和可用性，放弃分区容错。 意味着放弃系统的扩展性，不做分区要求，系统不再是分布式。</li>
+<li>C&amp;P: 保证 分区容错性 和 一致性，放弃可用性（A）。一旦发生网络故障、消息丢失或系统宕机等问题，牺牲用户体验，等系统恢复。（金融系统、电商系统等）</li>
+<li>A&amp;P: 保证 分区容错性 和 可用性，放弃一致性（C）。为保证 一致性 选择其他的策略（强一致性、弱一致性、最终一致性）。（社交网络、新闻网站等）</li>
+</ul>
+<p>在取舍上，应具体系统具体分析，不同业务要求可能不太一样，钱的问题就是一分不能多一分不能少，必须保证一致性。如果<strong>网络分区</strong>长时间处于正常状态（绝大部分时间），可以忽略 P，C 和 A 是能够同时保证的。</p>
+<blockquote>
+<p>PS: 若系统存在<strong>网络分区</strong>，还要坚持选择CA会发生什么？例如，系统中的某个节点在进行写操作。为了保证 C，必须要禁止其他节点的读写操作，这就和 A 发生冲突了。如果为了保证 A，其他节点的读写操作正常的话，那就和 C 发生冲突了。</p>
+</blockquote>
+<h2 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h2><p>BASE 是Basically Available（基本可用）、Soft state（弱状态）、Eventually consistent（最终一致性）三个短语的简写。是由eBay的架构师Dan Pritchett 在其文章 <a target="_blank" rel="noopener" href="https://queue.acm.org/detail.cfm?id=1394128">BASE: An Acid Alternative</a> 中第一次明确提出的。BASE是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的总结，是基于 CAP 定理逐步演化而来的，其核心思想是即使无法做到强一致性（Strong consistency），但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性（Eventual consistency）。（《从Paxos到Zookeeper》）</p>
+<ul>
+<li>基本可用：指分布式系统在出现不可预知故障时，允许损失部分可用性，如响应时间上的损失或功能上的损失。</li>
+<li>软状态：允许系统中的数据存在中间状态，并认为该状态不影响系统的整体可用性，即允许系统在多个不同节点的数据副本存在数据延时。</li>
+<li>最终一致性：数据不可能一直是软状态，在一个时间期限过后，应当保证所有<strong>数据副本</strong>能达到一致，也就是达到数据的最终一致性。</li>
+</ul>
+<h3 id="分布式一致性的-5-种级别"><a href="#分布式一致性的-5-种级别" class="headerlink" title="分布式一致性的 5 种级别"></a>分布式一致性的 5 种级别</h3><ul>
+<li>强一致性：系统写入了什么，读出来的就是什么。</li>
+<li>弱一致性：不一定可以读取到最新写入的值，也不保证多少时间之后读取到的数据是最新的，只是会尽量保证某个时刻达到数据一致的状态。</li>
+<li>最终一致性：弱一致性的升级版，系统会保证在一定时间内达到数据一致的状态。</li>
+<li>会话一致性：在同一个客户端会话中可以读到一致的值，其他的会话不保证。</li>
+<li>用户一致性：同一个用户可以读到一致的值，其他用户不能保证。</li>
+</ul>
+<p>比较推崇是最终一致性级别，但是某些对数据一致要求十分严格的场景，比如银行转账还是要保证强一致性。</p>
+<h3 id="实现最终一致性的具体方式"><a href="#实现最终一致性的具体方式" class="headerlink" title="实现最终一致性的具体方式"></a>实现最终一致性的具体方式</h3><h4 id="读写分离"><a href="#读写分离" class="headerlink" title="读写分离"></a>读写分离</h4><p>将读操作和写操作分离，写操作直接更新主数据库，而读操作则从副本数据库中读取数据。由于副本数据库的更新有一定的延迟，因此在写入后立即读取数据可能会出现不一致的情况,但可以保证最终一致性。</p>
+<h4 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h4><p>在更新数据时，每次都生成一个新的版本，并将新版本的数据写入分布式系统的不同节点中。在读取数据时，选择最新的版本进行查询。这种方式可以保证数据的最终一致性。</p>
+<h4 id="基于时间戳的冲突检测"><a href="#基于时间戳的冲突检测" class="headerlink" title="基于时间戳的冲突检测"></a>基于时间戳的冲突检测</h4><p>在更新数据时，每次都添加一个时间戳，并将新数据写入分布式系统的不同节点中。在读取数据时，选择时间戳最大的数据进行查询。这种方式可以避免数据的冲突，并保证数据的最终一致性。</p>
+<h4 id="基于分布式事务的方法"><a href="#基于分布式事务的方法" class="headerlink" title="基于分布式事务的方法"></a>基于分布式事务的方法</h4><p>在进行跨节点的事务时，使用分布式事务来保证事务的原子性、一致性、隔离性和持久性。这种方式可以保证数据的强一致性，但是性能相对较低，需要考虑系统的复杂度和可扩展性。</p>
+<p>最后，还是要根据 业务场景 和 系统架构 选择合适的最终一致性方案。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
+<p>ACID 是数据库事务完整性的理论，CAP 是分布式系统设计理论，BASE 是 CAP 理论中 AP 方案的延伸。</p>
+</blockquote>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1860632">一文看懂｜分布式系统之CAP理论</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33999708">谈谈分布式系统的CAP理论</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2018/07/cap.html">CAP 定理的含义</a></p>
+<p><a target="_blank" rel="noopener" href="https://gudaoxuri.gitbook.io/microservices-architecture/wei-fu-wu-hua-zhi-ji-shu-jia-gou/cap">CP与AP的取舍</a></p>
+<p><a target="_blank" rel="noopener" href="https://queue.acm.org/detail.cfm?id=1394128">Base:An Acid Alternative</a></p>
+
     </div>
 
     
@@ -241,7 +278,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://h31i.github.io/2020/03/09/%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91/" title="从上往下打印二叉树">https://h31i.github.io/2020/03/09/从上往下打印二叉树/</a>
+    <a href="https://h31i.github.io/2022/02/13/2022-02-CAP-BASE/" title="CAP &amp; BASE 理论整理">https://h31i.github.io/2022/02/13/2022-02-CAP-BASE/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -253,7 +290,9 @@
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i> 算法</a>
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"><i class="fa fa-tag"></i> 分布式</a>
+              <a href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag"><i class="fa fa-tag"></i> 架构</a>
+              <a href="/tags/%E7%90%86%E8%AE%BA/" rel="tag"><i class="fa fa-tag"></i> 理论</a>
           </div>
 
         
@@ -262,12 +301,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/09/%E5%8C%85%E5%90%ABmin%E5%87%BD%E6%95%B0%E7%9A%84%E6%A0%88/" rel="prev" title="包含min函数的栈">
-      <i class="fa fa-chevron-left"></i> 包含min函数的栈
+    <a href="/2022/01/10/2022-01-database-drop/" rel="prev" title="delete、drop和truncate之间的区别">
+      <i class="fa fa-chevron-left"></i> delete、drop和truncate之间的区别
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/10/%E4%B8%8D%E7%94%A8%E5%8A%A0%E5%87%8F%E4%B9%98%E9%99%A4%E5%81%9A%E5%8A%A0%E6%B3%95/" rel="next" title="不用加减乘除做加法">
-      不用加减乘除做加法 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/10/11/2022-10-MacBook%E5%88%A0%E9%99%A4Java-%E9%85%8D%E7%BD%AEJava/" rel="next" title="MacBook删除Java&配置Java&切换版本">
+      MacBook删除Java&配置Java&切换版本 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -327,7 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP%E7%90%86%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">CAP理论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#P-C-A-%E4%B8%89%E7%A7%8D%E7%89%B9%E6%80%A7%E4%B8%8D%E5%8F%AF%E5%85%BC%E5%BE%97%EF%BC%8C%E5%A6%82%E4%BD%95%E5%8F%96%E8%88%8D%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">P-C-A 三种特性不可兼得，如何取舍？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BASE%E7%90%86%E8%AE%BA"><span class="nav-number">2.</span> <span class="nav-text">BASE理论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7%E7%9A%84-5-%E7%A7%8D%E7%BA%A7%E5%88%AB"><span class="nav-number">2.1.</span> <span class="nav-text">分布式一致性的 5 种级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7%E7%9A%84%E5%85%B7%E4%BD%93%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">实现最终一致性的具体方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB"><span class="nav-number">2.2.1.</span> <span class="nav-text">读写分离</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="nav-number">2.2.2.</span> <span class="nav-text">版本控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E6%88%B3%E7%9A%84%E5%86%B2%E7%AA%81%E6%A3%80%E6%B5%8B"><span class="nav-number">2.2.3.</span> <span class="nav-text">基于时间戳的冲突检测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.2.4.</span> <span class="nav-text">基于分布式事务的方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
